@@ -1,6 +1,7 @@
+import pyximport; pyximport.install()
 import numpy as np
-import cSplitBregman
-import cRegions as regions
+import segmentation.cregions as regions
+import segmentation.cSplitBregman as cSplitBregman
 import math
 
 

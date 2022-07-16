@@ -13,7 +13,7 @@ cpdef TVR(double [:,:] F, double mu, double tol, method="aniso", solver="gs"):
         int rows=F.shape[0]
         int cols=F.shape[1]
         double alpha = 1.0 / (2*mu)
-
+        double err
         double [:,:] U = np.copy(F)
         double [:,:] U1
         double [:,:] X = np.zeros((rows-1,cols))
@@ -57,7 +57,8 @@ cpdef TVR(double [:,:] F, double mu, double tol, method="aniso", solver="gs"):
         
         # Break if below tolerance
         if iter > 4:
-            if stopfunc(U, U1) < tol:
+            err = stopfunc(U, U1)
+            if err < tol:
                 break
             
             
@@ -76,7 +77,7 @@ cpdef TVR(double [:,:] F, double mu, double tol, method="aniso", solver="gs"):
         # bregmanX, bregmanY
         bX += Udx - X;
         bY += Udy - Y;
-
+    
     return np.asarray(U)
 
 
@@ -86,14 +87,15 @@ cdef double stopfunc(double [:,:] new, double [:,:] old):
         double ssq=0
         double s=0
         double d
-
+        
     for i in range(old.shape[0]):
         for j in range(old.shape[1]):
             d = new[i,j]-old[i,j]
             ssq += d*d
             s += old[i,j]*old[i,j]
-
-    return s/ssq
+            
+            
+    return ssq/s
 
     
 #
